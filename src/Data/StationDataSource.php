@@ -17,6 +17,7 @@ class StationDataSource
 
     public function getAllStations(): array
     {
+        $whereConditions = $this->buildFilterWhereCondition();
         $stmt = $this->connection->execute(<<<SQL
             SELECT
                 s.station_id,
@@ -28,12 +29,17 @@ class StationDataSource
             FROM station s
                 INNER JOIN road_code_name r ON s.road_code = r.road_code
                 INNER JOIN position_name p ON s.position = p.position_code
-            LIMIT 30
+            WHERE ${whereConditions}
             SQL
         );
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return array_map(fn($row) => $this->hydrateData($row), $rows);
+    }
+
+    private function buildFilterWhereCondition(): string
+    {
+        return "r.road_name = 'Русский Кугунур - Большой Ляждур'";
     }
 
     private function hydrateData(array $data): StationData
@@ -48,4 +54,3 @@ class StationDataSource
         );
     }
 }
-
