@@ -1,0 +1,9 @@
+<tr id="{{ id }}" class="table__row">
+    <td class="table__cell">{{ road }}</td>
+    <td class="table__cell">{{ distance }}</td>
+    <td class="table__cell">
+        {% if name is empty %}-{% else %}{{ name }}{% endif %}
+    </td>
+    <td class="table__cell">{{ position }}</td>
+    <td class="table__cell">{{ with_pavilion }}</td>
+</tr>

@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+    <link href="{{ './css/app.css' }}" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="main_container">
+        <div class="content_container">
+            {% include 'components/station_table.twig' with {
+                stations
+            } %}
+        </div>
+    </div>
+{% endblock %}
