@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Data\StationsFormData;
 use App\Data\ListStationsParams;
 use App\Data\StationData;
 use App\Data\StationDataSource;
@@ -16,8 +17,9 @@ class StationsController
 {
     public function table(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
+        $formData = StationsFormData::fromArray($request->getQueryParams());
+        $listParams = $this->getListLimitationParams($formData);
         $dataSource = new StationDataSource();
-        $listParams = $this->getListLimitationParams();
         $stations = $dataSource->getStations($listParams);
         $view = Twig::fromRequest($request);
         /* XDEBUG + расширение для браузера
@@ -30,14 +32,24 @@ class StationsController
         ]);
     }
 
-    private function getListLimitationParams(): ListStationsParams
+    private function getListLimitationParams(StationsFormData $data): ListStationsParams
     {
+        $filters = [];
+        if ($value = $data->getFilterByRoad()) {
+            $filters[] = new StationFilter(StationFilter::FILTER_BY_ROAD, $value);
+        }
+        if ($value = $data->getFilterByStationName()) {
+            $filters[] = new StationFilter(StationFilter::FILTER_BY_STATION_NAME, $value);
+        }
+        if ($value = $data->getFilterByPosition()) {
+            $filters[] = new StationFilter(StationFilter::FILTER_BY_POSITION, $value);
+        }
+        if ($value = $data->getFilterByPavilion()) {
+            $filters[] = new StationFilter(StationFilter::FILTER_BY_PAVILION, $value);
+        }
         return new ListStationsParams(
             '',
-            [
-                new StationFilter(StationFilter::FILTER_BY_STATION_NAME, 'Большая Ноля'),
-                new StationFilter(StationFilter::FILTER_BY_POSITION, 'Слева')
-            ],
+            $filters,
             ListStationsParams::SORT_BY_STATION_NAME,
             true,
             10,
