@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Data\ListStationsParams;
 use App\Data\StationData;
 use App\Data\StationDataSource;
+use App\Data\StationFilter;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
-
 
 class StationsController
 {
-
     public function table(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $dataSource = new StationDataSource();
-        $stations = $dataSource->getAllStations();
+        $listParams = $this->getListLimitationParams();
+        $stations = $dataSource->getStations($listParams);
         $view = Twig::fromRequest($request);
         /* XDEBUG + расширение для браузера
          * $logger = new Logger('stderr');
@@ -30,6 +28,21 @@ class StationsController
         return $view->render($response, "stations_page.twig", [
             'stations' => array_map(fn($station) => $this->getRowData($station), $stations)
         ]);
+    }
+
+    private function getListLimitationParams(): ListStationsParams
+    {
+        return new ListStationsParams(
+            '',
+            [
+                new StationFilter(StationFilter::FILTER_BY_STATION_NAME, 'Большая Ноля'),
+                new StationFilter(StationFilter::FILTER_BY_POSITION, 'Слева')
+            ],
+            ListStationsParams::SORT_BY_STATION_NAME,
+            true,
+            10,
+            1
+        );
     }
 
     private function getRowData(StationData $data): array

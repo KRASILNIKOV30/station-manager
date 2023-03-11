@@ -15,10 +15,28 @@ class StationDataSource
         $this->connection = ConnectionProvider::getConnection();
     }
 
-    public function getAllStations(): array
+    public function getStations(ListStationsParams $params): array
     {
-        $whereConditions = $this->buildFilterWhereCondition();
-        $stmt = $this->connection->execute(<<<SQL
+        $queryParams = [];
+        $query = $this->buildSqlQuery($params, $queryParams);
+
+        $stmt = $this->connection->execute($query, $queryParams);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => $this->hydrateData($row), $rows);
+    }
+
+    public function buildSqlQuery(ListStationsParams $params, array &$queryParams): string
+    {
+        $whereConditions = [];
+        foreach ($params->getFilters() as $filter) {
+            $whereConditions[] = $this->buildFilterWhereCondition($filter, $queryParams);
+        }
+        $whereConditionsStr = count($whereConditions) > 0
+            ? implode(' AND ', $whereConditions)
+            : 'TRUE';
+
+        return (<<<SQL
             SELECT
                 s.station_id,
                 r.road_name,
@@ -29,17 +47,29 @@ class StationDataSource
             FROM station s
                 INNER JOIN road_code_name r ON s.road_code = r.road_code
                 INNER JOIN position_name p ON s.position = p.position_code
-            WHERE ${whereConditions}
+            WHERE ${whereConditionsStr}
             SQL
         );
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return array_map(fn($row) => $this->hydrateData($row), $rows);
     }
 
-    private function buildFilterWhereCondition(): string
+    private function buildFilterWhereCondition(StationFilter $filter, array &$queryParams): string
     {
-        return "r.road_name = 'Русский Кугунур - Большой Ляждур'";
+        switch ($filter->getFilterByField()) {
+            case StationFilter::FILTER_BY_ROAD:
+                $queryParams[] = $filter->getValue();
+                return 'r.road_name = ?';
+            case StationFilter::FILTER_BY_STATION_NAME:
+                $queryParams[] = $filter->getValue();
+                return 's.station_name = ?';
+            case StationFilter::FILTER_BY_POSITION:
+                $queryParams[] = $filter->getValue();
+                return 'p.position_name = ?';
+            case StationFilter::FILTER_BY_PAVILION:
+                $queryParams[] = $filter->getValue();
+                return 's.with_pavilion = ?';
+            default:
+                throw new \RuntimeException("Filtering is not implemented for field {$filter->getFilterByField()}");
+        }
     }
 
     private function hydrateData(array $data): StationData

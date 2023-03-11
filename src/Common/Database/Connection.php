@@ -14,13 +14,7 @@ final class Connection
     private string $password;
 
     private ?PDO $handle = null;
-
-    /**
-     * @param string $dsn - DSN, например 'mysql:dbname=testdb;host=127.0.0.1'
-     * @param string $user - имя пользователя MySQL
-     * @param string $password - пароль пользователя MySQL
-     */
-    public function __construct(string $dsn, string $user, string $password)
+    public function __construct()
     {
         /* det env lib */
         $this->dsn = 'mysql:dbname=station;host=localhost:3306';
