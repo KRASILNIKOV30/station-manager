@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Data;
 
-use phpDocumentor\Reflection\Types\Boolean;
-
 class StationData
 {
     private int $stationId;

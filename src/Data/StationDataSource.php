@@ -15,6 +15,10 @@ class StationDataSource
         $this->connection = ConnectionProvider::getConnection();
     }
 
+    /**
+     * @param ListStationsParams $params
+     * @return array
+     */
     public function getStations(ListStationsParams $params): array
     {
         $queryParams = [];
@@ -26,6 +30,44 @@ class StationDataSource
         return array_map(fn($row) => $this->hydrateData($row), $rows);
     }
 
+    /**
+     * @return array
+     */
+    public function getStationsRoadOptions(): array
+    {
+        $stmt = $this->connection->execute(<<<SQL
+            SELECT
+                road_code,
+                road_name
+            FROM road_code_name
+        SQL);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_combine(
+            array_column($rows, 'road_code'),
+            array_column($rows, 'road_name')
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getStationsPositionOptions(): array
+    {
+        $stmt = $this->connection->execute(<<<SQL
+            SELECT
+                position_code,
+                position_name
+            FROM position_name
+        SQL);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_combine(
+            array_column($rows, 'position_code'),
+            array_column($rows, 'position_name')
+        );
+    }
+
     public function buildSqlQuery(ListStationsParams $params, array &$queryParams): string
     {
         $whereConditions = [];
@@ -35,7 +77,8 @@ class StationDataSource
         $whereConditionsStr = count($whereConditions) > 0
             ? implode(' AND ', $whereConditions)
             : 'TRUE';
-
+        $sortByField = $this->buildOrderByValue($params->getSortByField());
+        $order = $params->isSortAscending() ? 'ASC' : 'DESC';
         return (<<<SQL
             SELECT
                 s.station_id,
@@ -47,7 +90,9 @@ class StationDataSource
             FROM station s
                 INNER JOIN road_code_name r ON s.road_code = r.road_code
                 INNER JOIN position_name p ON s.position = p.position_code
-            WHERE ${whereConditionsStr}
+            WHERE {$whereConditionsStr}
+            GROUP BY s.station_id 
+            ORDER BY {$sortByField} {$order}
             SQL
         );
     }
@@ -65,10 +110,23 @@ class StationDataSource
                 $queryParams[] = $filter->getValue();
                 return 'p.position_name = ?';
             case StationFilter::FILTER_BY_PAVILION:
-                $queryParams[] = $filter->getValue();
+                $queryParams[] = $filter->getValue() == "Есть";
                 return 's.with_pavilion = ?';
             default:
                 throw new \RuntimeException("Filtering is not implemented for field {$filter->getFilterByField()}");
+        }
+    }
+    private function buildOrderByValue(string $sortByField): string
+    {
+        switch ($sortByField) {
+            case ListStationsParams::SORT_BY_ROAD:
+                return 'r.road_name';
+            case ListStationsParams::SORT_BY_DISTANCE:
+                return 's.distance';
+            case ListStationsParams::SORT_BY_STATION_NAME:
+                return 's.station_name';
+            default:
+                throw new \RuntimeException("Ordering is not implementing for field {$sortByField}");
         }
     }
 

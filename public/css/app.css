@@ -34,7 +34,7 @@ body {
 
 .table-header__row, .table__row {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1.1fr 2fr 1fr 1fr;
     font-size: 18px;
 }
 
@@ -52,4 +52,19 @@ body {
 .table__row {
     height: 40px;
     border-bottom: 1px solid #b7b7b7;
+}
+
+.arrow {
+    display: none;
+}
+
+.sorting-button {
+    margin-left: 3px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.visible {
+    display: flex;
 }

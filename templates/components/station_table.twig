@@ -1,9 +1,27 @@
 <table class="table">
     <thead class="table-header">
     <tr class="table-header__row">
-        <th class="table-header__cell">Автомобильная дорога</th>
-        <th class="table-header__cell">Местоположение остановки, м</th>
-        <th class="table-header__cell">Название</th>
+        <th class="table-header__cell">
+            Автомобильная дорога
+            {% include '/components/sort.twig' with {
+                field: 'road',
+                is_sort_asc: form_values.is_sort_asc
+            } %}
+        </th>
+        <th class="table-header__cell">
+            Местоположение остановки, м
+            {% include '/components/sort.twig' with {
+                field: 'distance',
+                is_sort_asc: form_values.is_sort_asc
+            } %}
+        </th>
+        <th class="table-header__cell">
+            Название
+            {% include '/components/sort.twig' with {
+                field: 'station_name',
+                is_sort_asc: form_values.is_sort_asc
+            } %}
+        </th>
         <th class="table-header__cell">Расположение</th>
         <th class="table-header__cell">Наличие павильона</th>
     </tr>

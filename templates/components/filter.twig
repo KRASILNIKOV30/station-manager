@@ -1,0 +1,16 @@
+<fieldset>
+    <label for="{{ id }}">{{ label }}</label>
+    <select id="{{ id }}">
+        <option value="">Все</option>
+        {% for value, name in options %}
+            <option
+                    value="{{ name }}"
+                    {% if  name == selected %}
+                        selected
+                    {% endif %}
+            >
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select>
+</fieldset>

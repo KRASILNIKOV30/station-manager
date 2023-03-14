@@ -3,10 +3,36 @@
 {% block stylesheets %}
     <link href="{{ './css/app.css' }}" type="text/css" rel="stylesheet"/>
 {% endblock %}
+{% block javascript %}
+    <script src={{ "./script/stations_page.js" }}></script>
+{% endblock %}
 
 {% block content %}
     <div class="main_container">
         <div class="content_container">
+            <form>
+                {% include 'components/filter.twig' with {
+                    label: 'Дороги:',
+                    id: 'filter_by_road',
+                    options: road_options,
+                    selected: form_values.filter_by_road
+                } %}
+                {% include 'components/filter.twig' with {
+                    label: 'Расположение:',
+                    id: 'filter_by_position',
+                    options: position_options,
+                    selected: form_values.filter_by_position
+                } %}
+                {% include 'components/filter.twig' with {
+                    label: 'Наличие павильона:',
+                    id: 'filter_by_pavilion',
+                    options: {
+                        0: "Нет",
+                        1: "Есть"
+                    },
+                    selected: form_values.filter_by_pavilion
+                } %}
+            </form>
             {% include 'components/station_table.twig' with {
                 stations
             } %}

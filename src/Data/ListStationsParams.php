@@ -22,7 +22,7 @@ class ListStationsParams
     private string $sortByField;
     private bool $sortAscending;
     private int $pageSize;
-    private int $pageNo;
+    private int $pageNumber;
 
 
     /**
@@ -30,8 +30,7 @@ class ListStationsParams
      * @param StationFilter[] $filters
      * @param string $sortByField
      * @param bool $sortAscending
-     * @param int $pageSize
-     * @param int $pageNo
+     * @param int $pageNumber
      */
     public function __construct(
         string $searchQuery,
@@ -39,13 +38,13 @@ class ListStationsParams
         string $sortByField,
         bool $sortAscending,
         int $pageSize,
-        int $pageNo
+        int $pageNumber
     ) {
         if ($pageSize <= 0) {
             throw new \InvalidArgumentException("List page size must be positive number, got $pageSize");
         }
-        if ($pageNo < 1) {
-            throw new \InvalidArgumentException("List page number must be positive number, got $pageNo");
+        if ($pageNumber < 1) {
+            throw new \InvalidArgumentException("List page number must be positive number, got $pageNumber");
         }
         if (!in_array($sortByField, self::ALL_SORT_BY, true)) {
             throw new \InvalidArgumentException("List cannot be sorted by field '$sortByField'");
@@ -56,7 +55,7 @@ class ListStationsParams
         $this->sortByField = $sortByField;
         $this->sortAscending = $sortAscending;
         $this->pageSize = $pageSize;
-        $this->pageNo = $pageNo;
+        $this->pageNumber = $pageNumber;
     }
 
     public function getSearchQuery(): string
@@ -87,8 +86,8 @@ class ListStationsParams
         return $this->pageSize;
     }
 
-    public function getPageNo(): int
+    public function getPageNumber(): int
     {
-        return $this->pageNo;
+        return $this->pageNumber;
     }
 }

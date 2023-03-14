@@ -15,12 +15,15 @@ use Slim\Views\Twig;
 
 class StationsController
 {
+    private const PAGE_SIZE = 25;
     public function table(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $formData = StationsFormData::fromArray($request->getQueryParams());
         $listParams = $this->getListLimitationParams($formData);
         $dataSource = new StationDataSource();
         $stations = $dataSource->getStations($listParams);
+        $roadOptions = $dataSource->getStationsRoadOptions();
+        $positionOptions = $dataSource->getStationsPositionOptions();
         $view = Twig::fromRequest($request);
         /* XDEBUG + расширение для браузера
          * $logger = new Logger('stderr');
@@ -28,7 +31,11 @@ class StationsController
         $logger->info(print_r(array_map(fn($station) => $this->getRowData($station), $stations), false));*/
 
         return $view->render($response, "stations_page.twig", [
-            'stations' => array_map(fn($station) => $this->getRowData($station), $stations)
+            'stations' => array_map(fn($station) => $this->getRowData($station), $stations),
+            'form_values' => $formData->toArray(),
+            'road_options' => $roadOptions,
+            'position_options' => $positionOptions,
+            'sort_by_field' => $listParams->getSortByField(),
         ]);
     }
 
@@ -50,13 +57,17 @@ class StationsController
         return new ListStationsParams(
             '',
             $filters,
-            ListStationsParams::SORT_BY_STATION_NAME,
-            true,
-            10,
+            $data->getOrderByField(),
+            $data->getIsSortAsc(),
+            self::PAGE_SIZE,
             1
         );
     }
 
+    /**
+     * @param StationData $data
+     * @return array
+     */
     private function getRowData(StationData $data): array
     {
         return [

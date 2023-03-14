@@ -1,0 +1,17 @@
+<button
+        class="sorting-button"
+        data-field="{{ field }}"
+        data-sort-by-field="{{ sort_by_field }}"
+        data-is-sort-asc="{{ is_sort_asc }}"
+>
+    <div id="arrowRight" class="arrow {% if field != sort_by_field %}visible{% endif %}">
+        {{ source('./images/arrow-right.svg') }}
+    </div>
+    <div id="arrowDown" class="arrow {% if field == sort_by_field and is_sort_asc %}visible{% endif %}">
+        {{ source('./images/arrow-down.svg') }}
+    </div>
+    <div id="arrowUp" class="arrow {% if field == sort_by_field and not is_sort_asc %}visible{% endif %}">
+        {{ source('./images/arrow-up.svg') }}
+    </div>
+</button>
+
