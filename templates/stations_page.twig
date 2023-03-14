@@ -32,7 +32,9 @@
                     },
                     selected: form_values.filter_by_pavilion
                 } %}
+                {% include 'components/search.twig'%}
             </form>
+            <button id="sendFormButton">Применить</button>
             {% include 'components/station_table.twig' with {
                 stations
             } %}

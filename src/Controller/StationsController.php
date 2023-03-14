@@ -25,10 +25,6 @@ class StationsController
         $roadOptions = $dataSource->getStationsRoadOptions();
         $positionOptions = $dataSource->getStationsPositionOptions();
         $view = Twig::fromRequest($request);
-        /* XDEBUG + расширение для браузера
-         * $logger = new Logger('stderr');
-        $logger->pushHandler(new StreamHandler('php://stderr', Logger::WARNING));
-        $logger->info(print_r(array_map(fn($station) => $this->getRowData($station), $stations), false));*/
 
         return $view->render($response, "stations_page.twig", [
             'stations' => array_map(fn($station) => $this->getRowData($station), $stations),

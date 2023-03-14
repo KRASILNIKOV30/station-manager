@@ -30,9 +30,19 @@ const initSorting = () => {
     })
 }
 
+const initSearch = () => {
+    const search = document.getElementById('searchInput')
+    const sendFormButton = document.getElementById('sendFormButton')
+    sendFormButton.addEventListener('click', () => {
+        searchParams.set('search_query', search.value)
+        window.location.search = searchParams.toString()
+    })
+}
+
 window.addEventListener('load', () => {
     initFilter('filter_by_road')
     initFilter('filter_by_position')
     initFilter('filter_by_pavilion')
     initSorting()
+    initSearch()
 }, { once: true})
