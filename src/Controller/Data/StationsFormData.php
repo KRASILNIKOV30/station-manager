@@ -58,6 +58,7 @@ class StationsFormData
             'search_query' => $this->searchQuery,
             'sort_by' => $this->sortByField,
             'is_sort_asc' => $this->isSortAsc === 'true' ? 1 : 0,
+            'page_number' => $this->pageNumber
         ];
     }
 
@@ -75,7 +76,7 @@ class StationsFormData
             $parameters['search_query'] ?? '',
             $parameters['sort_by'] ?? 'road',
             $parameters['is_sort_asc'] ?? 'true',
-            $parameters['pageNumber'] ?? '1'
+            $parameters['page_number'] ?? '1'
         );
     }
     public function getFilterByRoad(): ?string

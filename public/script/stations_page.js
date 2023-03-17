@@ -30,6 +30,18 @@ const initSorting = () => {
     })
 }
 
+const initPagination = () => {
+    const paginationItems = document.querySelectorAll('.pagination__item')
+    paginationItems.forEach(item => {
+        item.addEventListener('click', () => {
+            searchParams.set('page_number', item.value)
+            window.location.search = searchParams.toString()
+        })
+    })
+}
+
+
+
 const initSearch = () => {
     const search = document.getElementById('searchInput')
     const sendFormButton = document.getElementById('sendFormButton')
@@ -45,4 +57,5 @@ window.addEventListener('load', () => {
     initFilter('filter_by_pavilion')
     initSorting()
     initSearch()
+    initPagination()
 }, { once: true})

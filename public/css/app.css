@@ -68,3 +68,11 @@ body {
 .visible {
     display: flex;
 }
+
+.pagination__container {
+    display: flex;
+}
+
+.pagination__item_selected {
+    background-color: pink;
+}

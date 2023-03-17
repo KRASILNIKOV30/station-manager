@@ -35,6 +35,7 @@
                 {% include 'components/search.twig'%}
             </form>
             <button id="sendFormButton">Применить</button>
+            {% include 'components/pagination.twig' %}
             {% include 'components/station_table.twig' with {
                 stations
             } %}

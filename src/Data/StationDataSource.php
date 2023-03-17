@@ -68,6 +68,15 @@ class StationDataSource
         );
     }
 
+    public function getRowsAmount(): int
+    {
+        $stmt = $this->connection->execute(<<<SQL
+            SELECT FOUND_ROWS()
+        SQL);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC)[0]["FOUND_ROWS()"];
+    }
+
     public function buildSqlQuery(ListStationsParams $params, array &$queryParams): string
     {
         $whereConditions = [];
@@ -77,10 +86,15 @@ class StationDataSource
         $whereConditionsStr = count($whereConditions) > 0
             ? implode(' AND ', $whereConditions)
             : 'TRUE';
+        $whereSearchConditions = $this->buildSearchWhereCondition($params->getSearchQuery(), $queryParams);
+        $whereConditionsStr .= ' AND (' . implode(' OR ', $whereSearchConditions) . ')';
         $sortByField = $this->buildOrderByValue($params->getSortByField());
         $order = $params->isSortAscending() ? 'ASC' : 'DESC';
+        $pageSize = $params->getPageSize();
+        $pageNumber = $params->getPageNumber();
+        $offset = $pageSize * ($pageNumber - 1);
         return (<<<SQL
-            SELECT
+            SELECT SQL_CALC_FOUND_ROWS
                 s.station_id,
                 r.road_name,
                 s.distance,
@@ -93,8 +107,21 @@ class StationDataSource
             WHERE {$whereConditionsStr}
             GROUP BY s.station_id 
             ORDER BY {$sortByField} {$order}
+            LIMIT {$pageSize} OFFSET {$offset}
             SQL
         );
+    }
+
+    private function buildSearchWhereCondition(string $searchQuery, &$queryParams): array
+    {
+        $columnsToSearch = ['r.road_name', 's.distance', 's.station_name'];
+        $result = [];
+        foreach ($columnsToSearch as $column) {
+            $queryParams[] = "%{$searchQuery}%";
+            $result[] = "{$column} LIKE ?";
+        }
+
+        return $result;
     }
 
     private function buildFilterWhereCondition(StationFilter $filter, array &$queryParams): string
@@ -116,6 +143,7 @@ class StationDataSource
                 throw new \RuntimeException("Filtering is not implemented for field {$filter->getFilterByField()}");
         }
     }
+
     private function buildOrderByValue(string $sortByField): string
     {
         switch ($sortByField) {

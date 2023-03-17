@@ -15,13 +15,15 @@ use Slim\Views\Twig;
 
 class StationsController
 {
-    private const PAGE_SIZE = 25;
+    private const PAGE_SIZE = 10;
     public function table(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $formData = StationsFormData::fromArray($request->getQueryParams());
         $listParams = $this->getListLimitationParams($formData);
         $dataSource = new StationDataSource();
         $stations = $dataSource->getStations($listParams);
+        $stationsNumber = $dataSource->getRowsAmount();
+        $pagesAmount = ceil($stationsNumber / self::PAGE_SIZE);
         $roadOptions = $dataSource->getStationsRoadOptions();
         $positionOptions = $dataSource->getStationsPositionOptions();
         $view = Twig::fromRequest($request);
@@ -32,6 +34,7 @@ class StationsController
             'road_options' => $roadOptions,
             'position_options' => $positionOptions,
             'sort_by_field' => $listParams->getSortByField(),
+            'pages_amount' => $pagesAmount
         ]);
     }
 
@@ -51,12 +54,12 @@ class StationsController
             $filters[] = new StationFilter(StationFilter::FILTER_BY_PAVILION, $value);
         }
         return new ListStationsParams(
-            '',
+            $data->getSearchQuery(),
             $filters,
             $data->getOrderByField(),
             $data->getIsSortAsc(),
             self::PAGE_SIZE,
-            1
+            $data->getPageNumber()
         );
     }
 
