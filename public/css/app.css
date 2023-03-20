@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 body {
     margin: 0;
     color: #323232;
@@ -5,17 +7,66 @@ body {
     font-family: "Roboto", serif;
 }
 
-.main_container {
+.main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.content_container {
+.content-container {
     border-radius: 20px;
     background-color: #fff;
     padding: 80px;
     margin: 100px 0;
+}
+
+.title {
+    margin: 0 0 30px;
+    font-size: 38px;
+}
+
+.form-item {
+    border: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+select {
+    font-size: 18px;
+    height: 40px;
+    padding: 0 10px;
+    border: none;
+    background-color: #d7d7d7;
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+option {
+    background-color: #f7f7f7;
+    border: none;
+    border-radius: 5px;
+}
+
+.search {
+    width: 437px;
+    font-size: 18px;
+    height: 40px;
+    border-radius: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background-color: #d7d7d7;
+    border: none;
+}
+
+.filter-container {
+    display: flex;
+    margin-bottom: 12px;
 }
 
 .table {
@@ -50,7 +101,7 @@ body {
 }
 
 .table__row {
-    height: 40px;
+    height: 60px;
     border-bottom: 1px solid #b7b7b7;
 }
 
@@ -71,8 +122,40 @@ body {
 
 .pagination__container {
     display: flex;
+    margin: 48px 0 12px 12px;
+    align-items: center;
+    font-size: 32px;
+}
+
+.pagination__item {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-color: #d7d7d7;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 3px;
+    font-size: 18px;
 }
 
 .pagination__item_selected {
-    background-color: pink;
+    background-color: #b3ffb1;
+}
+
+.input__container {
+    display: flex;
+    justify-content: space-between;
+    width: 570px;
+}
+
+.input__button {
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.input__button:hover {
+    background-color: #b7b7b7;
 }

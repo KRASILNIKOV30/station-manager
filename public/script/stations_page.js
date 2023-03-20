@@ -47,6 +47,7 @@ const initSearch = () => {
     const sendFormButton = document.getElementById('sendFormButton')
     sendFormButton.addEventListener('click', () => {
         searchParams.set('search_query', search.value)
+        searchParams.set('page_number', '1')
         window.location.search = searchParams.toString()
     })
 }

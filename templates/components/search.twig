@@ -1,4 +1,7 @@
-<fieldset>
-    <label for="searchInput">Поиск:</label>
-    <input id="searchInput" value="{{ form_values.search_query }}">
+<fieldset class="form-item">
+    <label class="label" for="searchInput">Поиск:</label>
+    <div class="input__container">
+        <input placeholder="Поиск по остановкам..." class="search" id="searchInput" value="{{ form_values.search_query }}">
+        <button class="input__button" id="sendFormButton">Применить</button>
+    </div>
 </fieldset>

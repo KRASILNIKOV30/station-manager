@@ -8,33 +8,35 @@
 {% endblock %}
 
 {% block content %}
-    <div class="main_container">
-        <div class="content_container">
+    <div class="main-container">
+        <div class="content-container">
+            <h1 class="title">Остановки Марий Эл</h1>
             <form>
-                {% include 'components/filter.twig' with {
-                    label: 'Дороги:',
-                    id: 'filter_by_road',
-                    options: road_options,
-                    selected: form_values.filter_by_road
-                } %}
-                {% include 'components/filter.twig' with {
-                    label: 'Расположение:',
-                    id: 'filter_by_position',
-                    options: position_options,
-                    selected: form_values.filter_by_position
-                } %}
-                {% include 'components/filter.twig' with {
-                    label: 'Наличие павильона:',
-                    id: 'filter_by_pavilion',
-                    options: {
-                        0: "Нет",
-                        1: "Есть"
-                    },
-                    selected: form_values.filter_by_pavilion
-                } %}
-                {% include 'components/search.twig'%}
+                <div class="filter-container">
+                    {% include 'components/filter.twig' with {
+                        label: 'Дороги:',
+                        id: 'filter_by_road',
+                        options: road_options,
+                        selected: form_values.filter_by_road
+                    } %}
+                    {% include 'components/filter.twig' with {
+                        label: 'Расположение:',
+                        id: 'filter_by_position',
+                        options: position_options,
+                        selected: form_values.filter_by_position
+                    } %}
+                    {% include 'components/filter.twig' with {
+                        label: 'Наличие павильона:',
+                        id: 'filter_by_pavilion',
+                        options: {
+                            0: "Нет",
+                            1: "Есть"
+                        },
+                        selected: form_values.filter_by_pavilion
+                    } %}
+                </div>
             </form>
-            <button id="sendFormButton">Применить</button>
+            {% include 'components/search.twig'%}
             {% include 'components/pagination.twig' %}
             {% include 'components/station_table.twig' with {
                 stations
