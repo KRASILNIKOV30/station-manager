@@ -30,7 +30,7 @@
         "slim/psr7": "^1.6",
         "slim/slim": "^4.11",
         "slim/twig-view": "^3.3",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.6"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",
